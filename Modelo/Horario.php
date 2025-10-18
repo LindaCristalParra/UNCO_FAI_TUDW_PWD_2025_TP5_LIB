@@ -5,8 +5,10 @@ class Horario {
     private DateTime $fecha;
     private DateTime $hora;
     private bool $disponible;
+    private string $mensajeOperacion;
 
-    public function __construct($cancha_id, $fecha, $hora, $disponible = true) {
+
+    public function __construct($cancha_id, $fecha, $hora, $disponible) {
         $this->cancha_id = $cancha_id;
         $this->fecha = $fecha;
         $this->hora = $hora;
@@ -63,10 +65,124 @@ class Horario {
         $this->disponible = $disponible;
     }
 
+        public function getMensajeOperacion(): string
+    {
+        return $this->mensajeOperacion;
+    }
+
+    public function setMensajeOperacion($mensaje): void
+    {
+        $this->mensajeOperacion = $mensaje;
+    }
+
+    public function setear($id, $cancha_id, $fecha, $hora, $disponible): void
+    {
+        $this->setId($id);
+        $this->setCanchaId($cancha_id);
+        $this->setFecha($fecha);
+        $this->setHora($hora);
+        $this->setDisponible($disponible);
+    }
+
     public function __toString(): string
     {
         $cadena = "Horario: id=" . $this->getId() . ", cancha_id=" . $this->getCanchaId() . ", fecha=" . $this->getFecha()->format('Y-m-d') . ", hora=" . $this->getHora()->format('H:i:s') . ", disponible=" . ($this->isDisponible() ? 'sí' : 'no');
         return $cadena;
+    }
+
+    public function insertar(): bool
+    {
+        $resp = false;
+        $base = new BaseDatos();
+        $sql = "INSERT INTO horarios (cancha_id, fecha, hora, disponible)
+                VALUES ('" 
+                . $this->getCanchaId() . "','" 
+                . $this->getFecha()->format('Y-m-d') 
+                . "','" . $this->getHora()->format('H:i:s') 
+                . "','" . ($this->isDisponible()) . "')";
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($sql)) {
+                $resp = true;
+            } else {
+                $this->setMensajeOperacion("Horario->insertar: " . $base->getError());
+            }
+        } else {
+            $this->setMensajeOperacion("Horario->insertar: " . $base->getError());
+        }
+        return $resp;
+    }
+
+
+    public function obtener($fecha): mixed
+    {
+        $resp = false;
+        $base = new BaseDatos();
+        $sql = "SELECT * FROM horarios WHERE fecha='" . $fecha . "'AND disponible=1'";
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($sql) > 0) {
+                $row = $base->Registro();
+                $this->setear($row['id'], $row['cancha_id'], $row['fecha'], $row['hora'], $row['disponible']);
+                $resp = $this;
+            }
+        } else {
+            $this->setMensajeOperacion("Horario->obtener: " . $base->getError());
+        }
+        return $resp;
+    }
+
+    public function modificar(): bool
+    {
+        $resp = false;
+        $base = new BaseDatos();
+        $sql = "UPDATE horarios SET cancha_id='" . $this->getCanchaId() . "', fecha='" . $this->getFecha()->format('Y-m-d') . "',
+                hora='" . $this->getHora()->format('H:i:s') . "', disponible='" . ($this->isDisponible()) . "' WHERE id='" . $this->getId() . "'";
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($sql)) {
+                $resp = true;
+            } else {
+                $this->setMensajeOperacion("Horario->modificar: " . $base->getError());
+            }
+        } else {
+            $this->setMensajeOperacion("Horario->modificar: " . $base->getError());
+        }
+        return $resp;
+    }
+
+    public function eliminar($id): bool
+    {
+        $resp = false;
+        $base = new BaseDatos();
+        $sql = "DELETE FROM horarios WHERE id='" . $id . "'";
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($sql)) {
+                $resp = true;
+            } else {
+                $this->setMensajeOperacion("Horario->eliminar: " . $base->getError());
+            }
+        } else {
+            $this->setMensajeOperacion("Horario->eliminar: " . $base->getError());
+        }
+        return $resp;
+    }
+
+    public static function listar($condicion = ""): array
+    {
+        $arreglo = [];
+        $base = new BaseDatos();
+        $sql = "SELECT * FROM horarios";
+        if ($condicion != "")
+            $sql .= " WHERE " . $condicion;
+        if ($base->Iniciar()) {
+            $res = $base->Ejecutar($sql);
+            if ($res > 0) {
+                while ($row = $base->Registro()) {
+                    $a = new Horario("", "", "", 0, true);
+                    $a->setear($row['id'], $row['cancha_id'], $row['fecha'], $row['hora'], $row['disponible']);
+                    $arreglo[] = $a;
+                }
+            }
+        }
+        return $arreglo;
     }
     
 }
