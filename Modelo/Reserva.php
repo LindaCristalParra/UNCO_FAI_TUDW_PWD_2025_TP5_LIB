@@ -125,11 +125,13 @@ class Reserva
         $this->fecha_reserva = $fecha_reserva;
     }
 
-        public function getMensajeOperacion(): string {
+    public function getMensajeOperacion(): string
+    {
         return $this->mensajeOperacion;
     }
 
-    public function setMensajeOperacion($mensaje): void {
+    public function setMensajeOperacion($mensaje): void
+    {
         $this->mensajeOperacion = $mensaje;
     }
 
@@ -261,4 +263,59 @@ class Reserva
         return $arreglo;
     }
 
+    public function obtenerReservasPorFecha($fecha, $estado = "confirmada"): array
+    {
+        $arreglo = [];
+        $base = new BaseDatos();
+        $sql = "SELECT * FROM reservas WHERE fecha='" . $fecha . "' AND estado='" . $estado . "'";
+        if ($base->Iniciar()) {
+            $res = $base->Ejecutar($sql);
+            if ($res > 0) {
+                while ($row = $base->Registro()) {
+                    $a = new Reserva("", "", "", "", "", "", "", "", "");
+                    $a->setear($row['id'], $row['cancha_id'], $row['fecha'], $row['hora'], $row['cliente_nombre'], $row['cliente_email'], $row['cliente_telefono'], $row['estado'], $row['fecha_reserva']);
+                    $arreglo[] = $a;
+                }
+            }
+        }
+        return $arreglo;
+    }
+
+    public function puedeCancelar($codigo_reserva): bool
+    {
+        $resp = false;
+        $base = new BaseDatos();
+        $sql = "SELECT estado FROM reservas WHERE id = '" . $codigo_reserva . "'";
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($sql) > 0) {
+                $row = $base->Registro();
+                if ($row['estado'] == 'confirmada') {
+                    $resp = true;
+                }
+            }
+        } else {
+            $this->setMensajeOperacion("Reserva->puedeCancelar: " . $base->getError());
+        }
+        return $resp;
+    }
+
+    public function cancelarReserva($codigo_reserva): bool
+    {
+        $resp = false;
+
+        if ($this->puedeCancelar($codigo_reserva)) {
+            $base = new BaseDatos();
+            $sql = "UPDATE reservas SET estado='cancelada' WHERE id='" . $codigo_reserva . "'";
+            if ($base->Iniciar()) {
+                if ($base->Ejecutar($sql)) {
+                    $resp = true;
+                } else {
+                    $this->setMensajeOperacion("Reserva->cancelarReserva: " . $base->getError());
+                }
+            } else {
+                $this->setMensajeOperacion("Reserva->cancelarReserva: " . $base->getError());
+            }
+        }
+        return $resp;
+    }
 }
