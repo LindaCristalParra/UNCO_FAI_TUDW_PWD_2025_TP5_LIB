@@ -184,5 +184,39 @@ class Horario {
         }
         return $arreglo;
     }
-    
+
+    public function actualizarDisponibilidad($horario_id, $disponible) : bool
+    {
+        $resp = false;
+        $base = new BaseDatos();
+        $sql = "UPDATE horarios SET disponible='" . ($disponible) . "' WHERE id='" . $horario_id . "'";
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($sql)) {
+                $resp = true;
+            } else {
+                $this->setMensajeOperacion("Horario->actualizarDisponibilidad: " . $base->getError());
+            }
+        } else {
+            $this->setMensajeOperacion("Horario->actualizarDisponibilidad: " . $base->getError());
+        }
+        return $resp;
+    }
+
+       public function obtenerDisponibilidadPorCancha($fecha, $cancha_id): array
+    {
+        $arreglo = [];
+        $base = new BaseDatos();
+        $sql = "SELECT * FROM horarios WHERE fecha='" . $fecha . "' AND cancha_id='" . $cancha_id . "' AND disponible=1";
+        if ($base->Iniciar()) {
+            $res = $base->Ejecutar($sql);
+            if ($res > 0) {
+                while ($row = $base->Registro()) {
+                    $a = new Horario("", "", "", 0, true);
+                    $a->setear($row['id'], $row['cancha_id'], $row['fecha'], $row['hora'], $row['disponible']);
+                    $arreglo[] = $a;
+                }
+            }
+        }
+        return $arreglo;
+    }
 }
