@@ -56,11 +56,11 @@ class Cancha {
     }
 
     public function __toString(): string {
-       $cadena =    "Cancha: id=$this->id, 
-                    nombre=$this->nombre, 
-                    descripcion=$this->descripcion, 
-                    precio_hora=$this->precio_hora, 
-                    activa=$this->activa";
+       $cadena =    "Cancha: id=" . $this->getId() . ", 
+                    nombre=" . $this->getNombre() . ", 
+                    descripcion=" . $this->getDescripcion() . ", 
+                    precio_hora=" . $this->getPrecioHora() . ", 
+                    activa=" . ($this->getActiva() ? 'sí' : 'no');
        return $cadena;
     }
     

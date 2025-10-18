@@ -123,16 +123,16 @@ class Reserva {
     }
 
     public function __toString(): string {
-       $cadena =    "Reserva: id=$this->id, 
-                    cancha_id=$this->cancha_id, 
-                    fecha=" . $this->fecha->format('Y-m-d') . ", 
-                    hora_inicio=" . $this->hora_inicio->format('H:i:s') . ", 
-                    hora_fin=" . $this->hora_fin->format('H:i:s') . ", 
-                    cliente_nombre=$this->cliente_nombre, 
-                    cliente_email=$this->cliente_email, 
-                    cliente_telefono=$this->cliente_telefono, 
-                    estado=$this->estado, 
-                    precio=$this->precio";
+       $cadena =    "Reserva: id=" . $this->getId() . ", 
+                    cancha_id=" . $this->getCanchaId() . ", 
+                    fecha=" . $this->getFecha()->format('Y-m-d') . ", 
+                    hora_inicio=" . $this->getHoraInicio()->format('H:i:s') . ", 
+                    hora_fin=" . $this->getHoraFin()->format('H:i:s') . ", 
+                    cliente_nombre=" . $this->getClienteNombre() . ", 
+                    cliente_email=" . $this->getClienteEmail() . ", 
+                    cliente_telefono=" . $this->getClienteTelefono() . ", 
+                    estado=" . $this->getEstado() . ", 
+                    precio=" . $this->getPrecio();
        return $cadena;
     }
 
