@@ -191,6 +191,38 @@ class Cancha
         return $arreglo;
     }
 
+    public function obtenerCanchasActivas(): array{
+        $arreglo = [];
+        $base = new BaseDatos();
+        $sql = "SELECT * FROM canchas WHERE activa = TRUE ORDER BY nombre";
+        if ($base->Iniciar()) {
+            $res = $base->Ejecutar($sql);
+            if ($res > 0) {
+                while ($row = $base->Registro()) {
+                    $a = new Cancha("", "", "", 0, true);
+                    $a->setear($row['id'], $row['nombre'], $row['descripcion'], $row['precio_hora'], $row['activa']);
+                    $arreglo[] = $a;
+                }
+            }
+        }
+        return $arreglo;
+    }
 
+    // Verificar si cancha existe y está activa
+    public function canchaDisponible($cancha_id): bool {
+        $resp = false;
+        $base = new BaseDatos();
+        $sql = "SELECT id FROM canchas WHERE id = '" . $cancha_id . "' AND activa = TRUE";
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($sql) > 0) {
+                $row = $base->Registro();
+                $resp = true;
+            }
+        } else {
+            $this->setMensajeOperacion("Cancha->obtener: " . $base->getError());
+        }
+        return $resp;
+    }
 
+    
 }
