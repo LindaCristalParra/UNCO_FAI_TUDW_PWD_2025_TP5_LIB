@@ -1,7 +1,8 @@
 <?php
 
 require_once 'Conector/BaseDatos.php';
-class Cancha {
+class Cancha
+{
     private int $id;
     private string $nombre;
     private string $descripcion;
@@ -11,63 +12,77 @@ class Cancha {
     private string $mensajeOperacion;
 
 
-    public function __construct($nombre, $descripcion, $precio_hora, $activa) {
-        
+    public function __construct($nombre, $descripcion, $precio_hora, $activa)
+    {
+
         $this->nombre = $nombre;
         $this->descripcion = $descripcion;
         $this->precio_hora = $precio_hora;
         $this->activa = $activa;
     }
 
-    public function getId(): int {
+    public function getId(): int
+    {
         return $this->id;
     }
 
-    public function setId($id): void {
+    public function setId($id): void
+    {
         $this->id = $id;
     }
 
-    public function getNombre(): string {
+    public function getNombre(): string
+    {
         return $this->nombre;
     }
 
-    public function setNombre($nombre): void {
+    public function setNombre($nombre): void
+    {
         $this->nombre = $nombre;
     }
 
-    public function getDescripcion(): string {
+    public function getDescripcion(): string
+    {
         return $this->descripcion;
     }
 
-    public function setDescripcion($descripcion): void {
+    public function setDescripcion($descripcion): void
+    {
         $this->descripcion = $descripcion;
     }
 
-    public function getPrecioHora(): float {
+    public function getPrecioHora(): float
+    {
         return $this->precio_hora;
     }
 
-    public function setPrecioHora($precio_hora): void {
+    public function setPrecioHora($precio_hora): void
+    {
         $this->precio_hora = $precio_hora;
     }
 
-    public function getActiva(): bool {
+    public function getActiva(): bool
+    {
         return $this->activa;
     }
 
-    public function setActiva($activa): void {
+    public function setActiva($activa): void
+    {
         $this->activa = $activa;
     }
 
-    public function getMensajeOperacion(): string {
+    public function getMensajeOperacion(): string
+    {
         return $this->mensajeOperacion;
     }
 
-    public function setMensajeOperacion($mensaje): void {
+    public function setMensajeOperacion($mensaje): void
+    {
         $this->mensajeOperacion = $mensaje;
     }
 
-    public function setear($id, $nombre, $descripcion, $precio_hora, $activa): void {
+    public function setear($id, $nombre, $descripcion, $precio_hora, $activa): void
+    {
         $this->setId($id);
         $this->setNombre($nombre);
         $this->setDescripcion($descripcion);
@@ -75,92 +90,99 @@ class Cancha {
         $this->setActiva($activa);
     }
 
-    public function __toString(): string {
-       $cadena =    "Cancha: id=" . $this->getId() . ", 
+    public function __toString(): string
+    {
+        $cadena = "Cancha: id=" . $this->getId() . ", 
                     nombre=" . $this->getNombre() . ", 
                     descripcion=" . $this->getDescripcion() . ", 
                     precio_hora=" . $this->getPrecioHora() . ", 
                     activa=" . ($this->getActiva() ? 'sí' : 'no');
-       return $cadena;
+        return $cadena;
     }
 
-        public function insertar(): bool {
+    public function insertar(): bool
+    {
         $resp = false;
         $base = new BaseDatos();
         $sql = "INSERT INTO canchas (nombre, descripcion, precio_hora, activa)
-                VALUES ('".$this->getNombre()."','".$this->getDescripcion()."','".$this->getPrecioHora()."','".$this->getActiva()."')";
-        if($base->Iniciar()){
-            if($base->Ejecutar($sql)){
+                VALUES ('" . $this->getNombre() . "','" . $this->getDescripcion() . "','" . $this->getPrecioHora() . "','" . $this->getActiva() . "')";
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($sql)) {
                 $resp = true;
             } else {
-                $this->setMensajeOperacion("Cancha->insertar: ".$base->getError());
+                $this->setMensajeOperacion("Cancha->insertar: " . $base->getError());
             }
         } else {
-            $this->setMensajeOperacion("Cancha->insertar: ".$base->getError());
+            $this->setMensajeOperacion("Cancha->insertar: " . $base->getError());
         }
         return $resp;
     }
 
 
-    public function obtener($nombre): mixed {
+    public function obtener($nombre): mixed
+    {
         $resp = false;
         $base = new BaseDatos();
-        $sql = "SELECT * FROM canchas WHERE nombre='".$nombre."'";
-        if($base->Iniciar()){
-            if($base->Ejecutar($sql) > 0){
+        $sql = "SELECT * FROM canchas WHERE nombre='" . $nombre . "'";
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($sql) > 0) {
                 $row = $base->Registro();
                 $this->setear($row['id'], $row['nombre'], $row['descripcion'], $row['precio_hora'], $row['activa']);
                 $resp = $this;
             }
         } else {
-            $this->setMensajeOperacion("Cancha->obtener: ".$base->getError());
+            $this->setMensajeOperacion("Cancha->obtener: " . $base->getError());
         }
         return $resp;
     }
 
-    public function modificar(): bool {
+    public function modificar(): bool
+    {
         $resp = false;
         $base = new BaseDatos();
-        $sql = "UPDATE canchas SET nombre='".$this->getNombre()."', descripcion='".$this->getDescripcion()."',
-                precio_hora='".$this->getPrecioHora()."', activa='".$this->getActiva()."' WHERE id='".$this->getId()."'";
-        if($base->Iniciar()){
-            if($base->Ejecutar($sql)){
+        $sql = "UPDATE canchas SET nombre='" . $this->getNombre() . "', descripcion='" . $this->getDescripcion() . "',
+                precio_hora='" . $this->getPrecioHora() . "', activa='" . $this->getActiva() . "' WHERE id='" . $this->getId() . "'";
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($sql)) {
                 $resp = true;
             } else {
-                $this->setMensajeOperacion("Cancha->modificar: ".$base->getError());
+                $this->setMensajeOperacion("Cancha->modificar: " . $base->getError());
             }
         } else {
-            $this->setMensajeOperacion("Cancha->modificar: ".$base->getError());
+            $this->setMensajeOperacion("Cancha->modificar: " . $base->getError());
         }
         return $resp;
     }
 
-    public function eliminar($id): bool {
+    public function eliminar($id): bool
+    {
         $resp = false;
         $base = new BaseDatos();
-        $sql = "DELETE FROM canchas WHERE id='".$id."'";
-        if($base->Iniciar()){
-            if($base->Ejecutar($sql)){
+        $sql = "DELETE FROM canchas WHERE id='" . $id . "'";
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($sql)) {
                 $resp = true;
             } else {
-                $this->setMensajeOperacion("Cancha->eliminar: ".$base->getError());
+                $this->setMensajeOperacion("Cancha->eliminar: " . $base->getError());
             }
         } else {
-            $this->setMensajeOperacion("Cancha->eliminar: ".$base->getError());
+            $this->setMensajeOperacion("Cancha->eliminar: " . $base->getError());
         }
         return $resp;
     }
 
-    public static function listar($condicion=""): array {
+    public static function listar($condicion = ""): array
+    {
         $arreglo = [];
         $base = new BaseDatos();
         $sql = "SELECT * FROM canchas";
-        if($condicion != "") $sql .= " WHERE ".$condicion;
-        if($base->Iniciar()){
+        if ($condicion != "")
+            $sql .= " WHERE " . $condicion;
+        if ($base->Iniciar()) {
             $res = $base->Ejecutar($sql);
-            if($res > 0){
-                while($row = $base->Registro()){
-                    $a = new Cancha("","","",0,true);
+            if ($res > 0) {
+                while ($row = $base->Registro()) {
+                    $a = new Cancha("", "", "", 0, true);
                     $a->setear($row['id'], $row['nombre'], $row['descripcion'], $row['precio_hora'], $row['activa']);
                     $arreglo[] = $a;
                 }
@@ -168,7 +190,7 @@ class Cancha {
         }
         return $arreglo;
     }
-    
+
 
 
 }
