@@ -2,3 +2,69 @@ body { background-color: #f8f9fa; }
 table thead th { white-space: nowrap; }
 .table td, .table th { vertical-align: middle; }
 
+
+/* Calendario y botones reserva */
+.calendar-arrow {
+    width: 1.2rem;
+    height: 1.2rem;
+    filter: invert(1) grayscale(1) brightness(0.2);
+    transition: filter 0.2s;
+}
+.calendar-arrow:hover {
+    filter: invert(36%) sepia(98%) saturate(749%) hue-rotate(183deg) brightness(1.2);
+}
+.calendar-arrow.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+.calendar-nav {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #212529;
+    letter-spacing: 0.5px;
+}
+.calendar-reserva-btn {
+    background: #fff;
+    border: 2px solid #0d6efd;
+    color: #0d6efd;
+    transition: background 0.2s, color 0.2s;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    font-size: 1.1rem;
+    padding: 0.5rem 1.2rem;
+}
+.calendar-reserva-btn:hover, .calendar-reserva-btn:focus {
+    background: #0d6efd;
+    color: #fff;
+    border-color: #0d6efd;
+}
+.calendar-year {
+    background: #0d6efd;
+    color: #fff;
+    border-radius: 0.25rem;
+    padding: 0.25rem 1rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 0 0.5rem;
+}
+.calendar-header-blue {
+    background: #0d6efd !important;
+    color: #fff !important;
+}
+
+/* Nav tabs personalizados */
+.nav-tabs .nav-link {
+    font-weight: bold;
+    color: #0d6efd;
+    transition: background 0.2s, color 0.2s;
+}
+.nav-tabs .nav-link.active {
+    background: #0d6efd;
+    
+    border-color: #0d6efd #0d6efd #fff;
+}
+.nav-tabs .nav-link:hover:not(.active) {
+    background: #e7f1ff;
+    color: #0a58ca;
+}
+
