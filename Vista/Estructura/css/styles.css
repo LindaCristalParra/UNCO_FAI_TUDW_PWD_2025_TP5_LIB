@@ -1,4 +1,13 @@
-/* Footer mini banner */
+
+/* Layout para sticky footer */
+.body-flex {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+main {
+    flex: 1 0 auto;
+}
 .footer-banner {
     background: radial-gradient(circle, #111 0%, #111 40%, #198754 100%);
     color: #fff;

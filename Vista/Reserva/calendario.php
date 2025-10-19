@@ -132,18 +132,12 @@ $anioActual = date('Y');
                 foreach($horarios as $horario) {
                     $reservado = false; // Cambiar por consulta a BD
                     echo '<div class="col-12 mb-2">';
-                    echo '<form method="post" action="#">';
-                    echo '<input type="hidden" name="anio" value="'.$anio.'">';
-                    echo '<input type="hidden" name="mes" value="'.$mes.'">';
-                    echo '<input type="hidden" name="dia" value="'.$diaSeleccionado.'">';
-                    echo '<input type="hidden" name="hora" value="'.$horario["inicio"].'">';
-                    echo '<input type="hidden" name="fin" value="'.$horario["fin"].'">';
                     if($reservado) {
                         echo '<button type="button" class="btn btn-secondary w-100" disabled>'.$horario["inicio"].' - '.$horario["fin"].'</button>';
                     } else {
-                        echo '<button type="submit" class="calendar-reserva-btn w-100">'.$horario["inicio"].' - '.$horario["fin"].'</button>';
+                        $link = "Reservar.php?anio=$anio&mes=$mes&dia=$diaSeleccionado&hora=".urlencode($horario["inicio"])."&fin=".urlencode($horario["fin"]);
+                        echo '<a href="'.$link.'" class="calendar-reserva-btn w-100 d-block text-center" style="text-decoration:none;">'.$horario["inicio"].' - '.$horario["fin"].'</a>';
                     }
-                    echo '</form>';
                     echo '</div>';
                 }
                 echo '</div>';
