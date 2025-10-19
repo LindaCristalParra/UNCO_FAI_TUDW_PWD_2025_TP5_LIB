@@ -19,7 +19,52 @@ include_once(__DIR__ . '/../Estructura/header.php');
         </div>
     <button type="submit" class="calendar-dia-btn">Ver mis reservas</button>
     </form>
-    <!-- Aquí se mostrarán las reservas del usuario y los botones para cancelar -->
+    <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['email'])): ?>
+        <div class="card mt-4">
+            <div class="card-header bg-success text-white text-center">
+                <strong>Mis Reservas</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0 text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Horario</th>
+                                <th>Cancha</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+
+                        // EJEMPLO PARA HACER EL ESTILO BORRAR DESPUES
+                        // Ejemplo de reservas, reemplazar por consulta a BD
+                        $reservas = [
+                            ["id"=>1, "fecha"=>"20/10/2025", "horario"=>"18:00 - 19:30", "cancha"=>"1"],
+                            ["id"=>2, "fecha"=>"22/10/2025", "horario"=>"20:00 - 21:30", "cancha"=>"2"],
+                        ];
+                        foreach($reservas as $res): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($res['fecha']) ?></td>
+                                <td><?= htmlspecialchars($res['horario']) ?></td>
+                                <td><?= htmlspecialchars($res['cancha']) ?></td>
+                                <td>
+                                    <form method="post" action="../Controlador/accionReservas.php" class="d-inline">
+                                        <input type="hidden" name="cancelar_id" value="<?= $res['id'] ?>">
+                                        <button type="submit" class="calendar-dia-btn">Cancelar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 </div>
 <?php
 include_once(__DIR__ . '/../Estructura/footer.php');
