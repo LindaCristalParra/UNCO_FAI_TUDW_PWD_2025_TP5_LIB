@@ -17,7 +17,7 @@ include_once(__DIR__ . '/../Estructura/header.php');
             <label for="email" class="form-label">Email</label>
             <input type="email" class="form-control" id="email" name="email" required>
         </div>
-        <button type="submit" class="btn btn-danger">Ver mis reservas</button>
+    <button type="submit" class="calendar-dia-btn">Ver mis reservas</button>
     </form>
     <!-- Aquí se mostrarán las reservas del usuario y los botones para cancelar -->
 </div>

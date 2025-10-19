@@ -89,7 +89,7 @@ $anioActual = date('Y');
                             }
                             for($dia=1; $dia<=$diasMes; $dia++) {
                                 $selected = (isset($_GET['dia']) && intval($_GET['dia']) == $dia);
-                                $fila[] = '<form method="get"><input type="hidden" name="anio" value="'.$anio.'"><input type="hidden" name="mes" value="'.$mes.'"><input type="hidden" name="dia" value="'.$dia.'"><button type="submit" class="btn '.($selected ? 'btn-primary' : 'btn-outline-primary').' w-100 h-100">'.$dia.'</button></form>';
+                                $fila[] = '<form method="get"><input type="hidden" name="anio" value="'.$anio.'"><input type="hidden" name="mes" value="'.$mes.'"><input type="hidden" name="dia" value="'.$dia.'"><button type="submit" class="calendar-dia-btn w-100 h-100'.($selected ? ' calendar-dia-btn-activo' : '').'">'.$dia.'</button></form>';
                                 if(count($fila) == 7) {
                                     echo '<tr>';
                                     foreach($fila as $celda) {

@@ -10,7 +10,10 @@
   <link rel="stylesheet" href="/UNCO_FAI_TUDW_PWD_2025_TP5_LIB/Vista/Estructura/css/bootstrap.min.css">
 </head>
 <body>
-  <header>
-    <h1>Reservas de Cancha</h1>
+  <header class="banner-futbol mb-4">
+    <div class="container py-4 text-center">
+      <h1 class="display-4 fw-bold mb-2 banner-title">Puro Fútbol</h1>
+      <p class="lead banner-subtitle">Reservá tu cancha</p>
+    </div>
   </header>
   <main>
