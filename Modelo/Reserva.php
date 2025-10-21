@@ -198,7 +198,18 @@ class Reserva
         if ($base->Iniciar()) {
             if ($base->Ejecutar($sql) > 0) {
                 $row = $base->Registro();
-                $this->setear($row['id'], $row['cancha_id'], $row['fecha'], $row['hora'], $row['cliente_nombre'], $row['cliente_email'], $row['cliente_telefono'], $row['estado'], $row['fecha_reserva']);
+                // Cast explícito para respetar los tipos estrictos del modelo
+                $this->setear(
+                    (int)$row['id'],
+                    (int)$row['cancha_id'],
+                    (string)$row['fecha'],
+                    (string)$row['hora'],
+                    (string)$row['cliente_nombre'],
+                    (string)$row['cliente_email'],
+                    (string)$row['cliente_telefono'],
+                    (string)$row['estado'],
+                    (string)$row['fecha_reserva']
+                );
                 $resp = $this;
             }
         } else {
@@ -254,8 +265,18 @@ class Reserva
             $res = $base->Ejecutar($sql);
             if ($res > 0) {
                 while ($row = $base->Registro()) {
-                    $a = new Reserva(0, "", "", "", "", "", "", "");
-                    $a->setear($row['id'], $row['cancha_id'], $row['fecha'], $row['hora'], $row['cliente_nombre'], $row['cliente_email'], $row['cliente_telefono'], $row['estado'], $row['fecha_reserva']);
+                    // Construcción segura con tipos correctos
+                    $a = new Reserva(
+                        (int)$row['cancha_id'],
+                        (string)$row['fecha'],
+                        (string)$row['hora'],
+                        (string)$row['cliente_nombre'],
+                        (string)$row['cliente_email'],
+                        (string)$row['cliente_telefono'],
+                        (string)$row['estado'],
+                        (string)$row['fecha_reserva']
+                    );
+                    $a->setId((int)$row['id']);
                     $arreglo[] = $a;
                 }
             }
@@ -272,8 +293,17 @@ class Reserva
             $res = $base->Ejecutar($sql);
             if ($res > 0) {
                 while ($row = $base->Registro()) {
-                    $a = new Reserva(0, "", "", "", "", "", "", "");
-                    $a->setear($row['id'], $row['cancha_id'], $row['fecha'], $row['hora'], $row['cliente_nombre'], $row['cliente_email'], $row['cliente_telefono'], $row['estado'], $row['fecha_reserva']);
+                    $a = new Reserva(
+                        (int)$row['cancha_id'],
+                        (string)$row['fecha'],
+                        (string)$row['hora'],
+                        (string)$row['cliente_nombre'],
+                        (string)$row['cliente_email'],
+                        (string)$row['cliente_telefono'],
+                        (string)$row['estado'],
+                        (string)$row['fecha_reserva']
+                    );
+                    $a->setId((int)$row['id']);
                     $arreglo[] = $a;
                 }
             }

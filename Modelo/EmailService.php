@@ -46,15 +46,35 @@ class EmailService
         $config = self::cargarConfig();
         
         // Crear DSN (Data Source Name) para el transporte SMTP
+        // Regla:
+        //  - TLS (587):  smtp://user:pass@host:587?encryption=tls&auth_mode=login
+        //  - SSL (465): smtps://user:pass@host:465
+        //  - Sin cifrado: smtp://user:pass@host:25
+        $encryption = $config['smtp_encryption'] ?? null;
+        $scheme = ($encryption === 'ssl') ? 'smtps' : 'smtp';
         $dsn = sprintf(
             '%s://%s:%s@%s:%d',
-            $config['smtp_encryption'],
-            urlencode($config['smtp_username']),
-            urlencode($config['smtp_password']),
-            $config['smtp_host'],
-            $config['smtp_port']
+            $scheme,
+            urlencode($config['smtp_username'] ?? ''),
+            urlencode($config['smtp_password'] ?? ''),
+            $config['smtp_host'] ?? 'localhost',
+            (int)($config['smtp_port'] ?? 25)
         );
+        // Agregar query params para TLS u otras opciones
+        $query = [];
+        if ($encryption === 'tls') {
+            $query[] = 'encryption=tls';
+        }
+        // Forzar modo de auth 'login' para máxima compatibilidad con Gmail/Outlook
+        $query[] = 'auth_mode=login';
+        if (!empty($query)) {
+            $dsn .= '?' . implode('&', $query);
+        }
         
+        // Log de diagnóstico (sin contraseña)
+        $dsnSafe = preg_replace('/:(.*?)@/', ':****@', $dsn);
+        error_log('[EmailService] Creando transporte con DSN: ' . $dsnSafe);
+
         $transport = Transport::fromDsn($dsn);
         return new Mailer($transport);
     }
@@ -88,13 +108,15 @@ class EmailService
             
             // Crear el email
             $email = (new Email())
-                ->from($config['from_email'])
+                ->from(sprintf('%s <%s>', $config['from_name'] ?? 'Puro Fútbol - Reservas', $config['from_email']))
                 ->to($destinatario)
                 ->subject('✅ Confirmación de Reserva - Puro Fútbol')
                 ->html($htmlBody);
             
             // Enviar
+            error_log('[EmailService] Enviando confirmación a: ' . $destinatario . ' desde: ' . $config['from_email']);
             $mailer->send($email);
+            error_log('[EmailService] Confirmación enviada OK');
             
             return [
                 'exito' => true,
@@ -102,6 +124,7 @@ class EmailService
             ];
             
         } catch (\Exception $e) {
+            error_log('[EmailService] Error enviarConfirmacion: ' . $e->getMessage());
             return [
                 'exito' => false,
                 'mensaje' => 'Error al enviar email: ' . $e->getMessage()
@@ -127,13 +150,15 @@ class EmailService
             
             // Crear el email
             $email = (new Email())
-                ->from($config['from_email'])
+                ->from(sprintf('%s <%s>', $config['from_name'] ?? 'Puro Fútbol - Reservas', $config['from_email']))
                 ->to($destinatario)
                 ->subject('❌ Cancelación de Reserva - Puro Fútbol')
                 ->html($htmlBody);
             
             // Enviar
+            error_log('[EmailService] Enviando cancelación a: ' . $destinatario . ' desde: ' . $config['from_email']);
             $mailer->send($email);
+            error_log('[EmailService] Cancelación enviada OK');
             
             return [
                 'exito' => true,
@@ -141,6 +166,7 @@ class EmailService
             ];
             
         } catch (\Exception $e) {
+            error_log('[EmailService] Error enviarCancelacion: ' . $e->getMessage());
             return [
                 'exito' => false,
                 'mensaje' => 'Error al enviar email: ' . $e->getMessage()
