@@ -39,7 +39,7 @@ class ReservaController
 
     private static function getPostString(string $key, int $max = 255): string
     {
-        $v = filter_input(INPUT_POST, $key, FILTER_SANITIZE_STRING);
+        $v = filter_input(INPUT_POST, $key, FILTER_DEFAULT);
         $v = is_string($v) ? trim($v) : '';
         return mb_substr($v, 0, $max);
     }

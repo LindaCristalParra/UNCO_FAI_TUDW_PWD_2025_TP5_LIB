@@ -22,7 +22,7 @@ class HorarioController
     // Listar horarios (opcional filtro por fecha y cancha)
     public static function listar(): void
     {
-        $fecha = filter_input(INPUT_GET, 'fecha', FILTER_SANITIZE_STRING);
+        $fecha = filter_input(INPUT_GET, 'fecha', FILTER_DEFAULT);
         $cancha = filter_input(INPUT_GET, 'cancha', FILTER_VALIDATE_INT);
         $cond = '';
         if ($fecha) $cond = "fecha='" . $fecha . "'";

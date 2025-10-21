@@ -38,7 +38,7 @@ class CanchaController
 
     public static function obtenerPorNombre(): void
     {
-        $nombre = filter_input(INPUT_GET, 'nombre', FILTER_SANITIZE_STRING);
+        $nombre = filter_input(INPUT_GET, 'nombre', FILTER_DEFAULT);
         if (!$nombre) self::badRequest('nombre requerido');
 
         $c = new Cancha('', '', 0.0, true);
@@ -56,7 +56,7 @@ class CanchaController
 }
 
 // Dispatcher simple: ?accion=listarActivas|obtenerPorNombre
-$accion = filter_input(INPUT_GET, 'accion', FILTER_SANITIZE_STRING) ?: '';
+$accion = filter_input(INPUT_GET, 'accion', FILTER_DEFAULT) ?: '';
 if ($accion) {
     switch ($accion) {
         case 'listarActivas': CanchaController::listarActivas(); break;
