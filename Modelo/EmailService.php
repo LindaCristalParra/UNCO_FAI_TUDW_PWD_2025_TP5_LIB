@@ -110,7 +110,7 @@ class EmailService
             $email = (new Email())
                 ->from(sprintf('%s <%s>', $config['from_name'] ?? 'Puro Fútbol - Reservas', $config['from_email']))
                 ->to($destinatario)
-                ->subject('✅ Confirmación de Reserva - Puro Fútbol')
+                ->subject('Confirmación de Reserva - Puro Fútbol')
                 ->html($htmlBody);
             
             // Enviar
@@ -152,7 +152,7 @@ class EmailService
             $email = (new Email())
                 ->from(sprintf('%s <%s>', $config['from_name'] ?? 'Puro Fútbol - Reservas', $config['from_email']))
                 ->to($destinatario)
-                ->subject('❌ Cancelación de Reserva - Puro Fútbol')
+                ->subject('Cancelación de Reserva - Puro Fútbol')
                 ->html($htmlBody);
             
             // Enviar
