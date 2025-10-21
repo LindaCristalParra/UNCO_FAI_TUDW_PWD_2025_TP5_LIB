@@ -176,7 +176,7 @@ class Horario {
             $res = $base->Ejecutar($sql);
             if ($res > 0) {
                 while ($row = $base->Registro()) {
-                    $a = new Horario("", "", "", 0, true);
+                    $a = new Horario("", "", "", true);
                     $a->setear($row['id'], $row['cancha_id'], $row['fecha'], $row['hora'], $row['disponible']);
                     $arreglo[] = $a;
                 }
@@ -211,7 +211,7 @@ class Horario {
             $res = $base->Ejecutar($sql);
             if ($res > 0) {
                 while ($row = $base->Registro()) {
-                    $a = new Horario("", "", "", 0, true);
+                    $a = new Horario("", "", "", true);
                     $a->setear($row['id'], $row['cancha_id'], $row['fecha'], $row['hora'], $row['disponible']);
                     $arreglo[] = $a;
                 }
