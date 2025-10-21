@@ -5,9 +5,8 @@
 require_once __DIR__ . '/../../../Control/ReservaController.php';
 require_once __DIR__ . '/../../../Control/metodoEncapsulado.php';
 
-$ve = new ValorEncapsulado();
 
-// Obtener datos del formulario
+$ve = new ValorEncapsulado();
 $anio = $ve->obtenerValor('anio', null);
 $mes = $ve->obtenerValor('mes', null);
 $dia = $ve->obtenerValor('dia', null);
@@ -16,29 +15,20 @@ $fin = $ve->obtenerValor('fin', null);
 $nombre = $ve->obtenerValor('nombre', null);
 $email = $ve->obtenerValor('email', null);
 $telefono = $ve->obtenerValor('telefono', null);
+$idCancha = $ve->obtenerValor('idCancha', 1); // Mejor si viene del formulario
 
-// Validar datos básicos
 if (!$anio || !$mes || !$dia || !$hora || !$nombre || !$email) {
     header('Location: ../../Reserva/Reservar.php?error=datos_incompletos');
     exit;
 }
 
-// Formatear fecha
-$fecha = sprintf('%04d-%02d-%02d', $anio, $mes, $dia);
+// Llama al controller, que internamente usa Carbon para validar y crear la reserva
+$resultado = ReservaController::crearReserva($idCancha, $anio, $mes, $dia, $hora, $fin, $nombre, $email, $telefono);
 
-// Crear la reserva (asumimos idCancha = 1 por defecto, ajustar según necesidad)
-$idCancha = 1;
-$fechaReservaNow = date('Y-m-d H:i:s');
-
-$reserva = new Reserva($idCancha, $fecha, $hora, $nombre, $email, $telefono, 'confirmada', $fechaReservaNow);
-
-if ($reserva->insertar()) {
-    // Enviar email de confirmación (opcional, implementar después)
-    // Redirigir a página de éxito
-    header('Location: ../../Reserva/confirmacion.php?exito=1&fecha=' . urlencode($fecha) . '&hora=' . urlencode($hora));
+if ($resultado['success']) {
+    header('Location: ../../Reserva/confirmacion.php?exito=1&fecha=' . urlencode($resultado['fecha']) . '&hora=' . urlencode($resultado['hora']));
     exit;
 } else {
-    // Error al crear reserva
-    header('Location: ../../Reserva/Reservar.php?error=no_se_pudo_crear');
+    header('Location: ../../Reserva/Reservar.php?error=' . urlencode($resultado['error']));
     exit;
 }

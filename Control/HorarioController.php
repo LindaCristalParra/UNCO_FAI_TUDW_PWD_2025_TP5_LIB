@@ -1,5 +1,4 @@
 <?php
-// Control/HorarioController.php
 // Controlador simple para operaciones sobre horarios
 
 // Configurar zona horaria de Argentina
@@ -8,11 +7,29 @@ date_default_timezone_set('America/Argentina/Buenos_Aires');
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../Modelo/Horario.php';
+require_once __DIR__ . '/../Modelo/Reserva.php';
+require_once __DIR__ . '/../Modelo/Cancha.php';
 
 use Carbon\Carbon;
 
-class HorarioController
-{
+class HorarioController{
+
+
+    // Verifica si un horario está totalmente ocupado (todas las canchas reservadas)
+    public static function horarioTotalmenteOcupado($fecha, $hora): bool
+    {
+        // Obtener canchas activas
+        $c = new Cancha('', '', 0.0, true);
+        $canchas = $c->obtenerCanchasActivas();
+        $totalCanchas = count($canchas);
+
+        // Contar reservas confirmadas para ese horario y fecha
+        $reservas = Reserva::listar("fecha='$fecha' AND hora='$hora' AND estado='confirmada'");
+        $totalReservas = count($reservas);
+
+        return $totalReservas >= $totalCanchas;
+    }
+
     public static function respondJson($data, int $status = 200): void
     {
         http_response_code($status);
@@ -62,7 +79,7 @@ class HorarioController
     // Obtener disponibilidad por cancha y fecha
     public static function disponibilidad(): void
     {
-        $fecha = filter_input(INPUT_GET, 'fecha', FILTER_SANITIZE_STRING);
+        $fecha = filter_input(INPUT_GET, 'fecha', FILTER_SANITIZE_SPECIAL_CHARS);
         $cancha = filter_input(INPUT_GET, 'cancha', FILTER_VALIDATE_INT);
         if (!$fecha || !$cancha) self::badRequest('fecha y cancha son requeridos');
 
@@ -88,7 +105,7 @@ class HorarioController
 }
 
 // Dispatcher simple: ?accion=listar|disponibilidad
-$accion = filter_input(INPUT_GET, 'accion', FILTER_SANITIZE_STRING) ?: '';
+$accion = filter_input(INPUT_GET, 'accion', FILTER_SANITIZE_SPECIAL_CHARS) ?: '';
 if ($accion) {
     switch ($accion) {
         case 'listar': HorarioController::listar(); break;

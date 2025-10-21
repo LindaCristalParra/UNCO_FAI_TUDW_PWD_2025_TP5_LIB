@@ -11,8 +11,46 @@ require_once __DIR__ . '/../Modelo/Reserva.php';
 
 use Carbon\Carbon;
 
-class ReservaController
-{
+class ReservaController{
+    /**
+     * Crear reserva desde vista/acción
+     * Recibe datos individuales, valida y crea la reserva usando Carbon
+     * Devuelve array con success, error, fecha, hora
+     */
+    public static function crearReserva($idCancha, $anio, $mes, $dia, $hora, $fin, $nombre, $email, $telefono): array
+    {
+        if (!$idCancha || !$anio || !$mes || !$dia || !$hora || !$nombre || !$email) {
+            return ['success' => false, 'error' => 'Datos incompletos'];
+        }
+
+        try {
+            $fecha = sprintf('%04d-%02d-%02d', $anio, $mes, $dia);
+            $fechaReserva = Carbon::parse($fecha . ' ' . $hora);
+            if ($fechaReserva->isPast()) {
+                return ['success' => false, 'error' => 'No se pueden hacer reservas en el pasado'];
+            }
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => 'Fecha y hora inválidas'];
+        }
+
+        $fechaReservaNow = Carbon::now()->format('Y-m-d H:i:s');
+        $reserva = new Reserva($idCancha, $fecha, $hora, $nombre, $email, $telefono, 'confirmada', $fechaReservaNow);
+
+        if ($reserva->insertar()) {
+            return [
+                'success' => true,
+                'fecha' => $fecha,
+                'hora' => $hora
+            ];
+        } else {
+            return [
+                'success' => false,
+                'error' => 'No se pudo crear la reserva',
+                'detalle' => $reserva->getMensajeOperacion()
+            ];
+        }
+    }
+
     public static function respondJson($data, int $status = 200): void
     {
         http_response_code($status);
