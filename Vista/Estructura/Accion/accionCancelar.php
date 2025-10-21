@@ -4,6 +4,7 @@
 
 require_once __DIR__ . '/../../../Control/CancelarController.php';
 require_once __DIR__ . '/../../../Control/metodoEncapsulado.php';
+require_once __DIR__ . '/../../../Modelo/EmailService.php';
 
 $ve = new ValorEncapsulado();
 
@@ -19,8 +20,16 @@ if (!$cancelar_id) {
 $resultado = CancelarController::cancelarReserva(intval($cancelar_id));
 
 if ($resultado['exito']) {
-    // TODO: Enviar email de cancelación usando Symfony Mailer
-    // EmailService::enviarCancelacion($resultado['reserva']['email'], $resultado['reserva']);
+    // Enviar email de cancelación
+    $datosEmail = [
+        'nombre' => $resultado['reserva']['nombre'],
+        'fecha' => $resultado['reserva']['fecha'],
+        'hora' => $resultado['reserva']['hora'],
+        'cancha' => $resultado['reserva']['cancha']
+    ];
+    
+    $resultadoEmail = EmailService::enviarCancelacion($resultado['reserva']['email'], $datosEmail);
+    // Nota: aunque falle el email, la cancelación ya está registrada, así que redirigimos igual
     
     // Redirigir con mensaje de éxito
     header('Location: ../../Reserva/cancelar.php?exito=cancelada');
@@ -31,3 +40,4 @@ if ($resultado['exito']) {
     header('Location: ../../Reserva/cancelar.php?error=' . $mensajeError);
     exit;
 }
+

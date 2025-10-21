@@ -8,6 +8,7 @@ date_default_timezone_set('America/Argentina/Buenos_Aires');
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../Modelo/Reserva.php';
+require_once __DIR__ . '/../Modelo/Cancha.php';
 
 use Carbon\Carbon;
 
@@ -38,10 +39,15 @@ class ReservaController{
         $reserva = new Reserva($idCancha, $fecha, $hora, $nombre, $email, $telefono, 'confirmada', $fechaReservaNow);
 
         if ($reserva->insertar()) {
+            // Obtener el nombre de la cancha
+            $canchas = Cancha::listar("id=" . $idCancha);
+            $nombreCancha = !empty($canchas) ? $canchas[0]->getNombre() : 'Cancha ' . $idCancha;
+            
             return [
                 'success' => true,
                 'fecha' => $fecha,
-                'hora' => $hora
+                'hora' => $hora,
+                'cancha' => $nombreCancha
             ];
         } else {
             return [

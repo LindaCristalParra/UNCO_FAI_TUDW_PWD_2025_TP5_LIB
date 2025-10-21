@@ -4,6 +4,7 @@
 
 require_once __DIR__ . '/../../../Control/ReservaController.php';
 require_once __DIR__ . '/../../../Control/metodoEncapsulado.php';
+require_once __DIR__ . '/../../../Modelo/EmailService.php';
 
 
 $ve = new ValorEncapsulado();
@@ -26,9 +27,21 @@ if (!$anio || !$mes || !$dia || !$hora || !$nombre || !$email) {
 $resultado = ReservaController::crearReserva($idCancha, $anio, $mes, $dia, $hora, $fin, $nombre, $email, $telefono);
 
 if ($resultado['success']) {
+    // Enviar email de confirmación
+    $datosEmail = [
+        'nombre' => $nombre,
+        'fecha' => $resultado['fecha'],
+        'hora' => $resultado['hora'],
+        'cancha' => $resultado['cancha']
+    ];
+    
+    $resultadoEmail = EmailService::enviarConfirmacion($email, $datosEmail);
+    // Nota: aunque falle el email, la reserva ya está creada, así que redirigimos igual
+    
     header('Location: ../../Reserva/confirmacion.php?exito=1&fecha=' . urlencode($resultado['fecha']) . '&hora=' . urlencode($resultado['hora']));
     exit;
 } else {
     header('Location: ../../Reserva/Reservar.php?error=' . urlencode($resultado['error']));
     exit;
 }
+

@@ -146,6 +146,10 @@ class CancelarController
         $modelo->setId($reserva->getId());
         
         if ($modelo->modificar($reserva->getId())) {
+            // Obtener el nombre de la cancha
+            $canchas = Cancha::listar("id=" . $reserva->getCanchaId());
+            $nombreCancha = !empty($canchas) ? $canchas[0]->getNombre() : 'Cancha ' . $reserva->getCanchaId();
+            
             return [
                 'exito' => true,
                 'mensaje' => 'Reserva cancelada exitosamente',
@@ -153,7 +157,8 @@ class CancelarController
                     'fecha' => $reserva->getFecha(),
                     'hora' => $reserva->getHora(),
                     'email' => $reserva->getClienteEmail(),
-                    'nombre' => $reserva->getClienteNombre()
+                    'nombre' => $reserva->getClienteNombre(),
+                    'cancha' => $nombreCancha
                 ]
             ];
         } else {

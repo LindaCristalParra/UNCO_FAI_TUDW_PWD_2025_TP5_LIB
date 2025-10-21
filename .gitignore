@@ -16,6 +16,7 @@ desktop.ini
 # Archivos de configuración local
 config_local.php
 .env
+config/email.php
 
 # Logs
 *.log
