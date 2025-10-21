@@ -182,7 +182,7 @@ class Cancha
             $res = $base->Ejecutar($sql);
             if ($res > 0) {
                 while ($row = $base->Registro()) {
-                    $a = new Cancha("", "", "", 0, true);
+                    $a = new Cancha("", "", 0.0, true);
                     $a->setear($row['id'], $row['nombre'], $row['descripcion'], $row['precio_hora'], $row['activa']);
                     $arreglo[] = $a;
                 }
@@ -199,7 +199,7 @@ class Cancha
             $res = $base->Ejecutar($sql);
             if ($res > 0) {
                 while ($row = $base->Registro()) {
-                    $a = new Cancha("", "", "", 0, true);
+                    $a = new Cancha("", "", 0.0, true);
                     $a->setear($row['id'], $row['nombre'], $row['descripcion'], $row['precio_hora'], $row['activa']);
                     $arreglo[] = $a;
                 }

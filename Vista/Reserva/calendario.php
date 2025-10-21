@@ -1,9 +1,12 @@
 <?php
 include_once(__DIR__ . '/../Estructura/header.php');
-// Vista de calendario de reservas
-// Calendario mensual con Bootstrap
-$mesActual = date('n');
-$anioActual = date('Y');
+
+// CONTROLADOR: Preparar todos los datos necesarios
+require_once(__DIR__ . '/../../Control/CalendarioController.php');
+$datosCalendario = CalendarioController::obtenerDatosCalendario($_GET);
+
+// Extraer datos para la vista
+extract($datosCalendario);
 ?>
 <div class="container mt-4">
     <ul class="nav nav-tabs mb-3">
@@ -16,13 +19,6 @@ $anioActual = date('Y');
     </ul>
     <h2>Calendario de Reservas</h2>
     <!-- Calendario mensual en tabla Bootstrap -->
-    <?php
-    $mes = isset($_GET['mes']) ? intval($_GET['mes']) : $mesActual;
-    $anio = isset($_GET['anio']) ? intval($_GET['anio']) : $anioActual;
-    $anioMin = $anioActual;
-    $anioMax = $anioActual+2;
-    $mesesNombres = [1=>'Enero',2=>'Febrero',3=>'Marzo',4=>'Abril',5=>'Mayo',6=>'Junio',7=>'Julio',8=>'Agosto',9=>'Septiembre',10=>'Octubre',11=>'Noviembre',12=>'Diciembre'];
-    ?>
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card mb-4 shadow-sm">
@@ -80,30 +76,33 @@ $anioActual = date('Y');
                         </thead>
                         <tbody>
                             <?php
-                            $primerDia = mktime(0,0,0,$mes,1,$anio);
-                            $diasMes = date('t', $primerDia);
-                            $diaSemana = (date('N', $primerDia) % 7);
-                            $fila = [];
-                            for($i=1; $i<$diaSemana; $i++) {
-                                $fila[] = '';
-                            }
-                            for($dia=1; $dia<=$diasMes; $dia++) {
-                                $selected = (isset($_GET['dia']) && intval($_GET['dia']) == $dia);
-                                $fila[] = '<form method="get"><input type="hidden" name="anio" value="'.$anio.'"><input type="hidden" name="mes" value="'.$mes.'"><input type="hidden" name="dia" value="'.$dia.'"><button type="submit" class="calendar-dia-btn w-100 h-100'.($selected ? ' calendar-dia-btn-activo' : '').'">'.$dia.'</button></form>';
-                                if(count($fila) == 7) {
-                                    echo '<tr>';
-                                    foreach($fila as $celda) {
-                                        echo '<td>'.($celda ?: '&nbsp;').'</td>';
-                                    }
-                                    echo '</tr>';
-                                    $fila = [];
-                                }
-                            }
-                            if(count($fila)) {
-                                while(count($fila)<7) $fila[] = '';
+                            // Renderizar semanas preparadas por el controlador
+                            foreach ($semanas as $semana) {
                                 echo '<tr>';
-                                foreach($fila as $celda) {
-                                    echo '<td>'.($celda ?: '&nbsp;').'</td>';
+                                foreach ($semana as $dia) {
+                                    if ($dia === null) {
+                                        echo '<td>&nbsp;</td>';
+                                    } else {
+                                        $claseActivo = $dia['seleccionado'] ? ' calendar-dia-btn-activo' : '';
+                                        $deshabilitado = $dia['deshabilitado'] ?? false;
+                                        
+                                        echo '<td>';
+                                        
+                                        if ($deshabilitado) {
+                                            // Día pasado: mostrar como texto sin interacción
+                                            echo '<span class="calendar-dia-deshabilitado" style="display:block;padding:8px;color:#999;cursor:not-allowed;">' . $dia['dia'] . '</span>';
+                                        } else {
+                                            // Día disponible: mostrar botón clickeable
+                                            echo '<form method="get">';
+                                            echo '<input type="hidden" name="anio" value="' . $anio . '">';
+                                            echo '<input type="hidden" name="mes" value="' . $mes . '">';
+                                            echo '<input type="hidden" name="dia" value="' . $dia['dia'] . '">';
+                                            echo '<button type="submit" class="calendar-dia-btn w-100 h-100' . $claseActivo . '">' . $dia['dia'] . '</button>';
+                                            echo '</form>';
+                                        }
+                                        
+                                        echo '</td>';
+                                    }
                                 }
                                 echo '</tr>';
                             }
@@ -115,31 +114,29 @@ $anioActual = date('Y');
         </div>
         <div class="col-md-6">
             <?php
-            // Si se seleccionó un día, mostrar horarios al costado derecho
-            if(isset($_GET['dia'])) {
-                $diaSeleccionado = intval($_GET['dia']);
+            // Si se seleccionó un día, mostrar horarios preparados por el controlador
+            if ($horariosDisponibilidad !== null) {
                 echo "<h4 class='mb-3 calendar-nav'>Horarios para el $diaSeleccionado/$mes/$anio</h4>";
-                $horaInicio = 16;
-                $horaFin = 23;
-                $duracion = 1.5; // horas
-                $horarios = [];
-                for($h=$horaInicio; $h<$horaFin; $h+=$duracion) {
-                    $horaStr = sprintf('%02d:%02d', floor($h), ($h-floor($h))*60);
-                    $finStr = sprintf('%02d:%02d', floor($h+$duracion), ($h+$duracion-floor($h+$duracion))*60);
-                    $horarios[] = ["inicio"=>$horaStr, "fin"=>$finStr];
-                }
                 echo '<div class="row">';
-                foreach($horarios as $horario) {
-                    $reservado = false; // Cambiar por consulta a BD
+                
+                foreach ($horariosDisponibilidad as $horario) {
                     echo '<div class="col-12 mb-2">';
-                    if($reservado) {
-                        echo '<button type="button" class="btn btn-secondary w-100" disabled>'.$horario["inicio"].' - '.$horario["fin"].'</button>';
+                    
+                    if (!$horario['disponible']) {
+                        // Horario completo (todas las canchas ocupadas)
+                        echo '<button type="button" class="btn btn-secondary w-100" disabled>';
+                        echo $horario['inicio'] . ' - ' . $horario['fin'];
+                        echo '</button>';
                     } else {
-                        $link = "Reservar.php?anio=$anio&mes=$mes&dia=$diaSeleccionado&hora=".urlencode($horario["inicio"])."&fin=".urlencode($horario["fin"]);
-                        echo '<a href="'.$link.'" class="calendar-reserva-btn w-100 d-block text-center" style="text-decoration:none;">'.$horario["inicio"].' - '.$horario["fin"].'</a>';
+                        // Horario disponible
+                        echo '<a href="' . $horario['link'] . '" class="calendar-reserva-btn w-100 d-block text-center" style="text-decoration:none;">';
+                        echo $horario['inicio'] . ' - ' . $horario['fin'];
+                        echo '</a>';
                     }
+                    
                     echo '</div>';
                 }
+                
                 echo '</div>';
             }
             ?>

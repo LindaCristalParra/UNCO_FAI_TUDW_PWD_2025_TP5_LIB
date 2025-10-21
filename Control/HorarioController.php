@@ -14,22 +14,6 @@ use Carbon\Carbon;
 
 class HorarioController{
 
-
-    // Verifica si un horario está totalmente ocupado (todas las canchas reservadas)
-    public static function horarioTotalmenteOcupado($fecha, $hora): bool
-    {
-        // Obtener canchas activas
-        $c = new Cancha('', '', 0.0, true);
-        $canchas = $c->obtenerCanchasActivas();
-        $totalCanchas = count($canchas);
-
-        // Contar reservas confirmadas para ese horario y fecha
-        $reservas = Reserva::listar("fecha='$fecha' AND hora='$hora' AND estado='confirmada'");
-        $totalReservas = count($reservas);
-
-        return $totalReservas >= $totalCanchas;
-    }
-
     public static function respondJson($data, int $status = 200): void
     {
         http_response_code($status);

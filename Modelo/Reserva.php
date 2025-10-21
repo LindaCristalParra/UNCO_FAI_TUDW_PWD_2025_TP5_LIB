@@ -254,7 +254,7 @@ class Reserva
             $res = $base->Ejecutar($sql);
             if ($res > 0) {
                 while ($row = $base->Registro()) {
-                    $a = new Reserva("", "", "", "", "", "", "", "", "");
+                    $a = new Reserva(0, "", "", "", "", "", "", "");
                     $a->setear($row['id'], $row['cancha_id'], $row['fecha'], $row['hora'], $row['cliente_nombre'], $row['cliente_email'], $row['cliente_telefono'], $row['estado'], $row['fecha_reserva']);
                     $arreglo[] = $a;
                 }
@@ -272,7 +272,7 @@ class Reserva
             $res = $base->Ejecutar($sql);
             if ($res > 0) {
                 while ($row = $base->Registro()) {
-                    $a = new Reserva("", "", "", "", "", "", "", "", "");
+                    $a = new Reserva(0, "", "", "", "", "", "", "");
                     $a->setear($row['id'], $row['cancha_id'], $row['fecha'], $row['hora'], $row['cliente_nombre'], $row['cliente_email'], $row['cliente_telefono'], $row['estado'], $row['fecha_reserva']);
                     $arreglo[] = $a;
                 }
