@@ -15,7 +15,7 @@ $fin = $_GET['fin'] ?? $_POST['fin'] ?? '';
                     <h4 class="mb-0">Confirmar Reserva</h4>
                 </div>
                 <div class="card-body">
-                    <form method="post" action="../Controlador/accionReserva.php">
+                    <form method="post" action="../Estructura/Accion/accionReserva.php">
                         <input type="hidden" name="anio" value="<?= htmlspecialchars($anio) ?>">
                         <input type="hidden" name="mes" value="<?= htmlspecialchars($mes) ?>">
                         <input type="hidden" name="dia" value="<?= htmlspecialchars($dia) ?>">

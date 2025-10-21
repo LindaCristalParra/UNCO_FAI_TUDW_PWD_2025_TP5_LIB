@@ -9,11 +9,18 @@ $accion = $ve->obtenerValor('accion', null);
 
 switch ($accion) {
   case 'crearReserva':
-    // Invocar al controlador correspondiente.
-    echo 'Acción crearReserva pendiente de implementación.';
+    require_once __DIR__ . '/accionReserva.php';
     break;
   case 'cancelarReserva':
-    echo 'Acción cancelarReserva pendiente de implementación.';
+    require_once __DIR__ . '/accionCancelar.php';
+    break;
+  case 'listarCanchas':
+    require_once __DIR__ . '/../../../Control/CanchaController.php';
+    CanchaController::listarActivas();
+    break;
+  case 'listarReservas':
+    require_once __DIR__ . '/../../../Control/ReservaController.php';
+    ReservaController::listar();
     break;
   default:
     http_response_code(400);

@@ -50,7 +50,7 @@ include_once(__DIR__ . '/../Estructura/header.php');
                                 <td><?= htmlspecialchars($res['horario']) ?></td>
                                 <td><?= htmlspecialchars($res['cancha']) ?></td>
                                 <td>
-                                    <form method="post" action="../Controlador/accionReservas.php" class="d-inline">
+                                    <form method="post" action="../Estructura/Accion/accionCancelar.php" class="d-inline">
                                         <input type="hidden" name="cancelar_id" value="<?= $res['id'] ?>">
                                         <button type="submit" class="calendar-dia-btn">Cancelar</button>
                                     </form>
