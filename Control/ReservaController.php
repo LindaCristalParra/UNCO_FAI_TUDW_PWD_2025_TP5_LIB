@@ -2,8 +2,14 @@
 // Control/ReservaController.php
 // Controlador simple para manejar operaciones sobre reservas.
 
+// Configurar zona horaria de Argentina
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+
 header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../Modelo/Reserva.php';
+
+use Carbon\Carbon;
 
 class ReservaController
 {
@@ -21,14 +27,22 @@ class ReservaController
 
     private static function validateDate(string $date): bool
     {
-        $d = DateTime::createFromFormat('Y-m-d', $date);
-        return $d && $d->format('Y-m-d') === $date;
+        try {
+            Carbon::createFromFormat('Y-m-d', $date);
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     private static function validateTime(string $time): bool
     {
-        $t = DateTime::createFromFormat('H:i', $time);
-        return $t && $t->format('H:i') === $time;
+        try {
+            Carbon::createFromFormat('H:i', $time);
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     private static function getPostInt(string $key): ?int
@@ -62,7 +76,18 @@ class ReservaController
         if (!self::validateTime($hora)) self::badRequest('hora no válida (HH:MM)');
         if ($nombre === '') self::badRequest('nombre no puede estar vacío');
 
-        $fechaReservaNow = date('Y-m-d H:i:s');
+        // Validar que la fecha no sea en el pasado
+        try {
+            $fechaReserva = Carbon::parse($fecha . ' ' . $hora);
+            if ($fechaReserva->isPast()) {
+                self::badRequest('No se pueden hacer reservas en el pasado');
+            }
+        } catch (Exception $e) {
+            self::badRequest('Fecha y hora inválidas');
+        }
+
+        // Usar Carbon para generar la fecha actual
+        $fechaReservaNow = Carbon::now()->format('Y-m-d H:i:s');
         $reserva = new Reserva($idCancha, $fecha, $hora, $nombre, '', '', 'confirmada', $fechaReservaNow);
         if ($reserva->insertar()) {
             self::respondJson(['success' => true], 201);

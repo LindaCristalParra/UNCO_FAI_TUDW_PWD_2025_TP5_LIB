@@ -2,8 +2,14 @@
 // Control/HorarioController.php
 // Controlador simple para operaciones sobre horarios
 
+// Configurar zona horaria de Argentina
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+
 header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../Modelo/Horario.php';
+
+use Carbon\Carbon;
 
 class HorarioController
 {
@@ -25,7 +31,16 @@ class HorarioController
         $fecha = filter_input(INPUT_GET, 'fecha', FILTER_DEFAULT);
         $cancha = filter_input(INPUT_GET, 'cancha', FILTER_VALIDATE_INT);
         $cond = '';
-        if ($fecha) $cond = "fecha='" . $fecha . "'";
+        if ($fecha) {
+            // Validar formato de fecha con Carbon
+            try {
+                $carbonFecha = Carbon::parse($fecha);
+                $fecha = $carbonFecha->format('Y-m-d');
+            } catch (Exception $e) {
+                self::badRequest('Formato de fecha inválido');
+            }
+            $cond = "fecha='" . $fecha . "'";
+        }
         if ($cancha) {
             $cond = $cond ? $cond . " AND cancha_id='" . $cancha . "'" : "cancha_id='" . $cancha . "'";
         }
@@ -50,6 +65,14 @@ class HorarioController
         $fecha = filter_input(INPUT_GET, 'fecha', FILTER_SANITIZE_STRING);
         $cancha = filter_input(INPUT_GET, 'cancha', FILTER_VALIDATE_INT);
         if (!$fecha || !$cancha) self::badRequest('fecha y cancha son requeridos');
+
+        // Validar formato de fecha con Carbon
+        try {
+            $carbonFecha = Carbon::parse($fecha);
+            $fecha = $carbonFecha->format('Y-m-d');
+        } catch (Exception $e) {
+            self::badRequest('Formato de fecha inválido');
+        }
 
         $h = new Horario(0, '', '', true);
         $arr = $h->obtenerDisponibilidadPorCancha($fecha, $cancha);
