@@ -5,6 +5,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../Modelo/Reserva.php';
 require_once __DIR__ . '/../Modelo/Cancha.php';
+require_once __DIR__ . '/../Modelo/Servicio/EmailService.php';
 
 use Carbon\Carbon;
 
@@ -149,6 +150,16 @@ class CancelarController
             // Obtener el nombre de la cancha
             $canchas = Cancha::listar("id=" . $reserva->getCanchaId());
             $nombreCancha = !empty($canchas) ? $canchas[0]->getNombre() : 'Cancha ' . $reserva->getCanchaId();
+            
+            // Enviar email de cancelación (responsabilidad del Controller)
+            $datosEmail = [
+                'nombre' => $reserva->getClienteNombre(),
+                'fecha' => $reserva->getFecha(),
+                'hora' => $reserva->getHora(),
+                'cancha' => $nombreCancha
+            ];
+            EmailService::enviarCancelacion($reserva->getClienteEmail(), $datosEmail);
+            // Nota: si falla el email, no afecta el resultado de la cancelación
             
             return [
                 'exito' => true,
