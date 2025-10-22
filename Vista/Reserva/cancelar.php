@@ -11,6 +11,7 @@ $emailBuscado = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['email'])) {
     $emailBuscado = trim($_POST['email']);
     $resultadoBusqueda = CancelarController::buscarReservasPorEmail($emailBuscado);
+
 }
 
 // Mensajes de éxito/error de la URL
@@ -85,7 +86,6 @@ $mensajeError = isset($_GET['error']) ? $_GET['error'] : null;
                             <tr>
                                 <th>Fecha</th>
                                 <th>Horario</th>
-                                <th>Cancha</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
@@ -94,7 +94,6 @@ $mensajeError = isset($_GET['error']) ? $_GET['error'] : null;
                             <tr>
                                 <td><?= htmlspecialchars($res['fecha']) ?></td>
                                 <td><?= htmlspecialchars($res['horario']) ?></td>
-                                <td><?= htmlspecialchars($res['cancha']) ?></td>
                                 <td>
                                     <?php if ($res['puede_cancelar']): ?>
                                         <form method="post" action="../Estructura/Accion/accionCancelar.php" class="d-inline" 

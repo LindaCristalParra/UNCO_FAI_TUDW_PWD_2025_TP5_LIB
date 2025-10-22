@@ -2,7 +2,7 @@
 // Vista/Estructura/Accion/accionCancelar.php
 // Procesa la cancelación de reserva desde cancelar.php
 
-require_once __DIR__ . '/../../../Control/CancelarController.php';
+require_once __DIR__ . '/../../../Control/ReservaController.php';
 require_once __DIR__ . '/../../../Control/metodoEncapsulado.php';
 
 $ve = new ValorEncapsulado();
@@ -16,7 +16,7 @@ if (!$cancelar_id) {
 }
 
 // El controller se encarga de cancelar Y enviar el email
-$resultado = CancelarController::cancelarReserva(intval($cancelar_id));
+$resultado = ReservaController::cancelarReserva(intval($cancelar_id));
 
 if ($resultado['exito']) {
     header('Location: ../../Reserva/cancelar.php?exito=cancelada');
