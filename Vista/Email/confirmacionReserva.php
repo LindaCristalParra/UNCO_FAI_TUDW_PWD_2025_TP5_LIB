@@ -22,7 +22,6 @@
         <div class="mail-detail">Tu reserva fue confirmada con éxito.</div>
     <div class="mail-detail"><strong>Fecha:</strong> <?= htmlspecialchars(date('d-m-Y', strtotime($fecha))) ?></div>
         <div class="mail-detail"><strong>Horario:</strong> <?= htmlspecialchars($hora) ?></div>
-        <div class="mail-detail"><strong>Cancha:</strong> <?= htmlspecialchars($cancha) ?></div>
         <div class="mail-footer">Gracias por elegirnos.<br>Puro Fútbol</div>
     </div>
 </body>

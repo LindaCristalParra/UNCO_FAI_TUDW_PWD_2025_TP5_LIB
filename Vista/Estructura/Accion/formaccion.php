@@ -14,14 +14,6 @@ switch ($accion) {
   case 'cancelarReserva':
     require_once __DIR__ . '/accionCancelar.php';
     break;
-  case 'listarCanchas':
-    require_once __DIR__ . '/../../../Control/CanchaController.php';
-    CanchaController::listarActivas();
-    break;
-  case 'listarReservas':
-    require_once __DIR__ . '/../../../Control/ReservaController.php';
-    ReservaController::listar();
-    break;
   default:
     http_response_code(400);
     echo 'Acción no reconocida o no provista.';

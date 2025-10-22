@@ -18,7 +18,7 @@ $hora = $_GET['hora'] ?? '';
                         <p class="mb-3">Tu reserva fue procesada exitosamente.</p>
                         <?php if ($fecha && $hora): ?>
                             <div class="alert alert-info">
-                                <strong>Fecha:</strong> <?= htmlspecialchars($fecha) ?><br>
+                                <strong>Fecha:</strong> <?= htmlspecialchars(date('d-m-Y', strtotime($fecha))) ?><br>
                                 <strong>Horario:</strong> <?= htmlspecialchars($hora) ?>
                             </div>
                         <?php endif; ?>

@@ -62,12 +62,13 @@ class ReservaController{
         }
     }
 }
-//     public static function respondJson($data, int $status = 200): void
-//     {
-//         http_response_code($status);
-//         echo json_encode($data, JSON_UNESCAPED_UNICODE);
-//         exit;
-//     }
+
+    // public static function respondJson($data, int $status = 200): void
+    // {
+    //     http_response_code($status);
+    //     echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    //     exit;
+    // }
 
 //     private static function badRequest(string $msg): void
 //     {
@@ -183,6 +184,7 @@ class ReservaController{
 //         self::respondJson(['error' => 'No se pudo cancelar', 'detalle' => $modelo->getMensajeOperacion()], 500);
 //     }
 
+
 //     /**
 //      * Listar reservas (opcional filtro por fecha)
 //      * GET: fecha (opcional)
@@ -209,6 +211,7 @@ class ReservaController{
 //         self::respondJson($out, 200);
 //     }
 // }
+
 
 // // // Dispatcher simple para llamadas directas a este archivo: ?accion=crear|obtener|actualizar|cancelar|listar
 // // $accion = filter_input(INPUT_GET, 'accion', FILTER_SANITIZE_STRING) ?: '';

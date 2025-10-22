@@ -19,7 +19,7 @@ class EmailService
     private static function cargarConfig(): array
     {
         if (self::$config === null) {
-            $configFile = __DIR__ . '/../config/email.php';
+            $configFile = __DIR__ . '/../../config/email.php';
             if (file_exists($configFile)) {
                 self::$config = require $configFile;
             } else {
@@ -86,7 +86,7 @@ class EmailService
     {
         extract($variables);
         ob_start();
-        include __DIR__ . '/../Vista/Email/' . $plantilla;
+        include __DIR__ . '/../../Vista/Email/' . $plantilla;
         return ob_get_clean();
     }
     

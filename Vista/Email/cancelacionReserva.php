@@ -22,7 +22,6 @@
         <div class="mail-detail">Tu reserva fue cancelada correctamente.</div>
     <div class="mail-detail"><strong>Fecha:</strong> <?= htmlspecialchars(date('d-m-Y', strtotime($fecha))) ?></div>
         <div class="mail-detail"><strong>Horario:</strong> <?= htmlspecialchars($hora) ?></div>
-        <div class="mail-detail"><strong>Cancha:</strong> <?= htmlspecialchars($cancha) ?></div>
         <div class="mail-footer">Lamentamos que no puedas asistir.<br>Puro Fútbol</div>
     </div>
 </body>
