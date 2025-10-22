@@ -11,7 +11,7 @@ php composer.phar install
 ### Si aparece error de OpenSSL
 
 **Solución:**
-1. Abrir el archivo `C:\xampp\php\php.ini` (o donde tengas PHP instalado)
+1. Abrir el archivo `C:\xampp\php\php.ini` 
 2. Buscar la línea: `;extension=openssl`
 3. Quitar el `;` para que quede: `extension=openssl`
 4. Guardar el archivo
