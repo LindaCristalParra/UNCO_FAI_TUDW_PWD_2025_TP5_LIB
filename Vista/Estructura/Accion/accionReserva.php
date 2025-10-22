@@ -10,7 +10,6 @@ $anio = $ve->obtenerValor('anio', null);
 $mes = $ve->obtenerValor('mes', null);
 $dia = $ve->obtenerValor('dia', null);
 $hora = $ve->obtenerValor('hora', null);
-$fin = $ve->obtenerValor('fin', null);
 $nombre = $ve->obtenerValor('nombre', null);
 $email = $ve->obtenerValor('email', null);
 $telefono = $ve->obtenerValor('telefono', null);
@@ -22,7 +21,7 @@ if (!$anio || !$mes || !$dia || !$hora || !$nombre || !$email) {
 }
 
 // El controller se encarga de crear la reserva Y enviar el email
-$resultado = ReservaController::crearReserva($idCancha, $anio, $mes, $dia, $hora, $fin, $nombre, $email, $telefono);
+$resultado = ReservaController::crearReserva($idCancha, $anio, $mes, $dia, $hora, $nombre, $email, $telefono);
 
 if ($resultado['success']) {
     header('Location: ../../Reserva/confirmacion.php?exito=1&fecha=' . urlencode($resultado['fecha']) . '&hora=' . urlencode($resultado['hora']));
