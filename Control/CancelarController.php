@@ -20,7 +20,7 @@ class CancelarController
     {
         // Validar formato de email
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return [
+            $respuesta = [
                 'exito' => false,
                 'mensaje' => 'Email inválido',
                 'reservas' => []
@@ -31,7 +31,7 @@ class CancelarController
         $reservas = Reserva::listar("cliente_email='" . $email . "' AND estado='confirmada'");
         
         if (empty($reservas)) {
-            return [
+            $respuesta = [
                 'exito' => true,
                 'mensaje' => 'No se encontraron reservas activas para este email',
                 'reservas' => []
@@ -49,7 +49,7 @@ class CancelarController
             $fechaCarbon = Carbon::parse($reserva->getFecha());
             $fechaFormateada = $fechaCarbon->format('d/m/Y');
             
-            // Calcular hora de fin (asumiendo duración de 1.5 horas)
+            // Calcular hora de fin (duración de 1.5 horas)
             $horaInicio = Carbon::parse($reserva->getFecha() . ' ' . $reserva->getHora());
             $horaFin = $horaInicio->copy()->addMinutes(90);
             
@@ -69,11 +69,12 @@ class CancelarController
             return strcmp($b['fecha_raw'], $a['fecha_raw']);
         });
         
-        return [
+        $respuesta = [
             'exito' => true,
             'mensaje' => 'Se encontraron ' . count($reservasFormateadas) . ' reserva(s)',
             'reservas' => $reservasFormateadas
         ];
+        return $respuesta;
     }
     
     /**
