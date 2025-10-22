@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . '/Cancha.php';
-require_once __DIR__ . '/Reserva.php';
+require_once __DIR__ . '/../Cancha.php';
+require_once __DIR__ . '/../Reserva.php';
 
 class Disponibilidad
 {

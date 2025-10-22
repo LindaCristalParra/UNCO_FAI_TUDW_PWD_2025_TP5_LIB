@@ -3,7 +3,7 @@
 // Lógica de negocio para envío de emails usando Symfony Mailer
 // Utiliza las plantillas HTML en Vista/Email/
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Mailer;

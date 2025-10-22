@@ -3,7 +3,7 @@
 // Prepara todos los datos necesarios sin que la vista acceda directamente a modelos
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../Modelo/Disponibilidad.php';
+require_once __DIR__ . '/../Modelo/Servicio/DisponibilidadService.php';
 
 use Carbon\Carbon;
 
